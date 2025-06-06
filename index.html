@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>加载中...</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100vh; width: 100vw;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="iframe" src=""></iframe>
+
+  <script>
+    function getQueryParam(key) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(key);
+    }
+
+    function base64Decode(str) {
+      try {
+        return decodeURIComponent(escape(atob(str))); // 兼容中文字符
+      } catch(e) {
+        console.error('Base64 解码失败:', e);
+        return null;
+      }
+    }
+
+    const encodedUrl = getQueryParam('c');
+    const titleParam = getQueryParam('bt') || '默认标题';
+
+    if (encodedUrl) {
+      const decodedUrl = base64Decode(encodedUrl);
+      if (decodedUrl && decodedUrl.startsWith('http')) {
+        document.getElementById('iframe').src = decodedUrl;
+        document.title = decodeURIComponent(titleParam);
+      } else {
+        document.body.innerHTML = `<h2 style="text-align:center;margin-top:20px;">无效的URL地址</h2>`;
+      }
+    } else {
+      document.body.innerHTML = `<h2 style="text-align:center;margin-top:20px;">参数 c 缺失</h2>`;
+    }
+  </script>
+</body>
+</html>
